@@ -123,17 +123,6 @@ export class Player extends EventEmitter {
     }
 
     /**
-     * Changes the volume, only for the current song
-     * @param volume The volume from 0 to 150
-     */
-    public async volume(volume: number): Promise<boolean> {
-        const d = await this.send("volume", { volume });
-        this.state.volume = volume;
-        if (this.listenerCount("volume")) this.emit("volume", volume);
-        return d;
-    }
-
-    /**
      * Seeks the current song to a certain position
      * @param position Seeks the song to the position specified in milliseconds, use the duration of the song from lavalink to get the duration
      */
@@ -144,13 +133,23 @@ export class Player extends EventEmitter {
     }
 
     /**
+     * Changes the volume, only for the current song
+     * @param volume The volume from 0 to 150
+     */
+    public async volume(volume: number): Promise<boolean> {
+        this.filters.volume = volume / 100;
+        const d = await this.send("filters", this.filters);
+        if (this.listenerCount("volume")) this.emit("volume", volume);
+        return d;
+    }
+
+    /**
      * Sets the equalizer of the current song, if you wanted to do something like bassboost
      * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/Frederikam/Lavalink/blob/master/IMPLEMENTATION.md#outgoing-messages) for more information
      */
-    public async equalizer(bands: PlayerEqualizerBand[]): Promise<boolean> {
-        const d = await this.send("equalizer", { bands });
-        this.state.equalizer = bands;
-        return d;
+    public equalizer(bands: PlayerEqualizerBand[]): Promise<boolean> {
+        this.filters.equalizer = bands;
+        return this.send("filters", this.filters);
     }
 
     public karaoke(level: number, monoLevel: number, filterBand: number, filterWidth: number): Promise<boolean> {
