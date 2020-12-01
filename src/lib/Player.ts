@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Manager } from "./Manager";
-import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState, JoinOptions } from "./Types";
+import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState, JoinOptions, Filters } from "./Types";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
@@ -31,6 +31,15 @@ export class Player extends EventEmitter {
      * The voiceUpdateState of the player, used for swtiching nodes
      */
     public voiceUpdateState: PlayerUpdateVoiceState | null = null;
+
+    public filters: Filters = {
+        volume: 1,
+        equalizer: [],
+        karaoke: null,
+        timescale: null,
+        tremolo: null,
+        vibrato: null
+    }
 
     /**
      * The constructor of the player
@@ -142,6 +151,53 @@ export class Player extends EventEmitter {
         const d = await this.send("equalizer", { bands });
         this.state.equalizer = bands;
         return d;
+    }
+
+    public karaoke(level: number, monoLevel: number, filterBand: number, filterWidth: number): Promise<boolean> {
+        this.filters.karaoke = {
+            level,
+            monoLevel,
+            filterBand,
+            filterWidth
+        };
+        return this.send("filters", this.filters);
+    }
+
+    public timescale(speed: number, pitch: number, rate: number): Promise<boolean> {
+        this.filters.timescale = {
+            speed,
+            pitch,
+            rate
+        };
+        return this.send("filters", this.filters);
+    }
+
+    public tremolo(frequency: number, depth: number): Promise<boolean> {
+        this.filters.tremolo = {
+            frequency,
+            depth
+        };
+        return this.send("filters", this.filters);
+    }
+
+    public vibrato(frequency: number, depth: number): Promise<boolean> {
+        this.filters.vibrato = {
+            frequency,
+            depth
+        };
+        return this.send("filters", this.filters);
+    }
+
+    public resetFilters(): Promise<boolean> {
+        this.filters = {
+            volume: this.filters.volume,
+            equalizer: [],
+            karaoke: null,
+            timescale: null,
+            tremolo: null,
+            vibrato: null
+        };
+        return this.send("filters", this.filters);
     }
 
     /**

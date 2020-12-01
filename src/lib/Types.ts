@@ -602,3 +602,34 @@ export interface RotatingNanoIpRoutePlanner {
     };
 }
 
+export interface Filters {
+    volume: number;
+    equalizer: PlayerEqualizerBand[];
+    karaoke: KaraokeConfig | null;
+    timescale: TimescaleConfig | null;
+    tremolo: TremoloConfig | null;
+    vibrato: VibratoConfig | null;
+}
+
+export interface KaraokeConfig {
+    level: number;
+    monoLevel: number;
+    filterBand: number;
+    filterWidth: number;
+}
+
+export interface TimescaleConfig {
+    speed: number;
+    pitch: number;
+    rate: number;
+}
+
+export interface TremoloConfig {
+    frequency: number;
+    depth: number;
+}
+
+export interface VibratoConfig {
+    frequency: number;
+    depth: number;
+}
