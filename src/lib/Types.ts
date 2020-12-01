@@ -38,20 +38,6 @@ export interface LavalinkPlayerState {
 }
 
 /**
- * Player State
- */
-export interface PlayerState extends LavalinkPlayerState {
-    /**
-     * The current volume of the Player, used for end user as lavalink doesn't provide this
-     */
-    volume: number;
-    /**
-     * The current equalizer state of the Player, so end users can keep track if they need to
-     */
-    equalizer: PlayerEqualizerBand[];
-}
-
-/**
  * Player Play Options
  */
 export interface PlayerPlayOptions {

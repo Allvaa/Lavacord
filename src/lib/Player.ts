@@ -1,16 +1,16 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Manager } from "./Manager";
-import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState, JoinOptions, Filters } from "./Types";
+import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerPlayOptions, PlayerUpdateVoiceState, JoinOptions, Filters } from "./Types";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
  */
 export class Player extends EventEmitter {
     /**
-     * The PlayerState of this Player
+     * The LavalinkPlayerState of this Player
      */
-    public state: PlayerState = { volume: 100, equalizer: [] };
+    public state: LavalinkPlayerState | null = null;
     /**
      * Whether or not the player is actually playing anything
      */
@@ -76,7 +76,7 @@ export class Player extends EventEmitter {
             }
         })
             .on("playerUpdate", data => {
-                this.state = { volume: this.state.volume, equalizer: this.state.equalizer, ...data.state };
+                this.state = data.state;
             });
     }
 
